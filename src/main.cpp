@@ -4,9 +4,7 @@
 
 int main()
 {
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  curl_global_cleanup();
+  curl::curl_helper helper;
 
   return EXIT_SUCCESS;
 }
