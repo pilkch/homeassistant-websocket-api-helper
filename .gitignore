@@ -1,0 +1,9 @@
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+libcurl/curl-*/
+homeassistant-websocket-api-helper
+output
+unit_tests
