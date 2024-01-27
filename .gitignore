@@ -7,3 +7,6 @@ libcurl/curl-*/
 homeassistant-websocket-api-helper
 output
 unit_tests
+
+configuration.json
+*.crt
