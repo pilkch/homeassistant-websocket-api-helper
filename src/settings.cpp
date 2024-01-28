@@ -12,6 +12,7 @@
 
 #include <json-c/json.h>
 
+#include "json.h"
 #include "settings.h"
 #include "util.h"
 
@@ -28,8 +29,8 @@ bool cSettings::LoadFromFile(const std::string& sFilePath)
     return false;
   }
 
-  json_object* jobj = json_tokener_parse(contents.c_str());
-  if (jobj == nullptr) {
+  util::cJSONDocument document(json_tokener_parse(contents.c_str()));
+  if (!document.IsValid()) {
     std::cerr<<"Invalid JSON config \""<<sFilePath<<"\""<<std::endl;
     return false;
   }
@@ -37,7 +38,7 @@ bool cSettings::LoadFromFile(const std::string& sFilePath)
   // Parse the JSON tree
 
   // Parse "settings"
-  json_object_object_foreach(jobj, settings_key, settings_val) {
+  json_object_object_foreach(document.Get(), settings_key, settings_val) {
     enum json_type type_settings = json_object_get_type(settings_val);
     if ((type_settings != json_type_object) || (strcmp(settings_key, "settings") != 0)) {
       std::cerr<<"settings object not found"<<std::endl;

@@ -23,6 +23,11 @@ int main()
     return EXIT_FAILURE;
   }
 
+  if (!homeassistant::Authenticate(ws, settings)) {
+    std::cerr<<"Authentication failed"<<std::endl;
+    return EXIT_FAILURE;
+  }
+
   const std::string backup_hash = homeassistant::CreateBackup(ws, settings);
   if (backup_hash.empty()) {
     std::cerr<<"Error creating backup"<<std::endl;
