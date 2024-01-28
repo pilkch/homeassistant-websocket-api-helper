@@ -1,35 +1,11 @@
-#include <fstream>
 #include <iostream>
-#include <string>  
-
-#include <curl/curl.h>
 
 #include "curl_helper.h"
+#include "home_assistant.h"
 #include "settings.h"
-#include "util.h"
 #include "web_socket.h"
 
 const std::string URL = "wss://homeassistant.network.home:8443/api/websocket";
-
-void do_websocket_homeassistant(curl::cWebSocket& ws)
-{
-  char buffer[2 * 1024] = {0};
-
-  util::msleep(20);
-
-  const ssize_t nbytes_read = ws.Receive(buffer, sizeof(buffer));
-  if (nbytes_read == 0) {
-    std::cout<<"Try again later"<<std::endl;
-  } else if (nbytes_read < 0) {
-    std::cout<<"Receive returned 0"<<std::endl;
-  } else {
-    std::cout<<"Receive received data: \""<<std::string(buffer, nbytes_read)<<"\""<<std::endl;
-  }
-
-  util::msleep(100);
-
-  ws.SendClose();
-}
 
 int main()
 {
@@ -47,7 +23,16 @@ int main()
     return EXIT_FAILURE;
   }
 
-  do_websocket_homeassistant(ws);
+  const std::string backup_hash = homeassistant::CreateBackup(ws, settings);
+  if (backup_hash.empty()) {
+    std::cerr<<"Error creating backup"<<std::endl;
+    return EXIT_FAILURE;
+  }
+
+  if (!homeassistant::DownloadBackup(ws, settings, backup_hash)) {
+    std::cerr<<"Error downloading backup"<<std::endl;
+    return EXIT_FAILURE;
+  }
 
   return EXIT_SUCCESS;
 }
