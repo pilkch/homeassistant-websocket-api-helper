@@ -1,20 +1,23 @@
 #pragma once
 
+#include <optional>
+
 #include <curl/curl.h>
 
 namespace curl {
 
-class web_socket {
+class cWebSocket {
 public:
-  web_socket();
-  ~web_socket();
+  cWebSocket();
+  ~cWebSocket();
 
-  bool open(const std::string_view url);
-  void close();
+  // NOTE: Open can optionally take a self signed certificate stored in a local file something like "./homeassistant.network.home.crt"
+  bool Open(std::string_view url, const std::optional<std::string>& self_signed_certificate_path);
+  void Close();
 
-  ssize_t send(std::string_view message);
-  bool send_close(); // Call this before closing the connection
-  ssize_t receive(char* data, size_t data_length);
+  ssize_t Send(std::string_view message);
+  bool SendClose(); // Call this before closing the connection
+  ssize_t Receive(char* out_data, size_t out_data_length);
 
 private:
   CURL* curl;

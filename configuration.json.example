@@ -1,0 +1,6 @@
+{
+  "settings": {
+    "api_token": "ABCDEFGHIJKLMNOPQ",
+    "self_signed_certificate": "./myserver.network.home.crt"
+  }
+}

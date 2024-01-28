@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(homeassistant-websocket-api-helper)
 
 file(GLOB_RECURSE sources src/*.cpp)
-file(GLOB_RECURSE sources_test src/curl_helper.cpp src/util.cpp src/web_socket.cpp test/src/*.cpp)
+file(GLOB_RECURSE sources_test src/curl_helper.cpp src/settings.cpp src/util.cpp src/web_socket.cpp test/src/*.cpp)
 
 # Add the sources to the target
 add_executable(homeassistant-websocket-api-helper ${sources})
@@ -63,7 +63,7 @@ set(CURL_LIB_DIR "${PROJECT_SOURCE_DIR}/output/lib")
 
 target_include_directories(homeassistant-websocket-api-helper SYSTEM PUBLIC ${CURL_INCLUDE_DIR})
 target_link_directories(homeassistant-websocket-api-helper PUBLIC ${CURL_LIB_DIR})
-target_link_libraries(homeassistant-websocket-api-helper PUBLIC curl)
+target_link_libraries(homeassistant-websocket-api-helper PUBLIC curl json-c)
 
 
 ###############################################################################
@@ -90,10 +90,7 @@ set_property(TARGET unit_tests PROPERTY INCLUDE_DIRECTORIES ${APP_INCLUDE_DIRECT
 target_include_directories(unit_tests SYSTEM PUBLIC ${CURL_INCLUDE_DIR})
 target_link_directories(unit_tests PUBLIC ${CURL_LIB_DIR})
 
-target_link_libraries(unit_tests PUBLIC
-  ${GTEST_BOTH_LIBRARIES}
-  curl
-)
+target_link_libraries(unit_tests PUBLIC ${GTEST_BOTH_LIBRARIES} curl json-c)
 
 target_include_directories(unit_tests PUBLIC
   ${GTEST_INCLUDE_DIRS} # doesn't do anything on Linux

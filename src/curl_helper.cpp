@@ -4,12 +4,12 @@
 
 namespace curl {
 
-curl_helper::curl_helper()
+cCurlHelper::cCurlHelper()
 {
   curl_global_init(CURL_GLOBAL_ALL);
 }
 
-curl_helper::~curl_helper()
+cCurlHelper::~cCurlHelper()
 {
   curl_global_cleanup();
 }

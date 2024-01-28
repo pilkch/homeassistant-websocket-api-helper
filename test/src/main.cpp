@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-  curl::curl_helper helper;
+  curl::cCurlHelper helper;
 
   ::testing::InitGoogleTest(&argc, argv);
 

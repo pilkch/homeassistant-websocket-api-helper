@@ -2,10 +2,10 @@
 
 namespace curl {
 
-class curl_helper {
+class cCurlHelper {
 public:
-  curl_helper();
-  ~curl_helper();
+  cCurlHelper();
+  ~cCurlHelper();
 };
 
 }
