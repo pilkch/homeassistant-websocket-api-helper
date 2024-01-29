@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cinttypes>
+
 #include <optional>
 
 #include <curl/curl.h>
@@ -18,6 +20,7 @@ public:
   ssize_t Send(std::string_view message);
   bool SendClose(); // Call this before closing the connection
   ssize_t Receive(char* out_data, size_t out_data_length);
+  ssize_t Receive(char* out_data, size_t out_data_length, uint32_t timeout_ms);
 
 private:
   CURL* curl;

@@ -28,7 +28,7 @@ int main()
     return EXIT_FAILURE;
   }
 
-  const std::string backup_hash = homeassistant::CreateBackup(ws, settings);
+  const std::string backup_hash = homeassistant::CreateBackup(ws);
   if (backup_hash.empty()) {
     std::cerr<<"Error creating backup"<<std::endl;
     return EXIT_FAILURE;

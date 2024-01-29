@@ -8,7 +8,7 @@ namespace homeassistant {
 bool Authenticate(curl::cWebSocket& ws, const application::cSettings& settings);
 
 // Returns the backup hash if a backup was created, or an empty string
-std::string CreateBackup(curl::cWebSocket& ws, const application::cSettings& settings);
+std::string CreateBackup(curl::cWebSocket& ws);
 
 // Downloads an already created backup
 bool DownloadBackup(curl::cWebSocket& ws, const application::cSettings& settings, const std::string& backup_hash);
