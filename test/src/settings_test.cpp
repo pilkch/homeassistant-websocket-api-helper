@@ -11,4 +11,6 @@ TEST(Application, TestSettings)
 
   EXPECT_STREQ("ABCDEFGHIJKLMNOPQ", settings.GetAPIToken().c_str());
   EXPECT_STREQ("./myserver.network.home.crt", settings.GetSelfSignedCertificate().c_str());
+  EXPECT_STREQ("myserver.network.home", settings.GetHostName().c_str());
+  EXPECT_EQ(8443, settings.GetPort());
 }

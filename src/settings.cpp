@@ -1,3 +1,4 @@
+#include <climits>
 #include <cstring>
 
 #include <limits>
@@ -91,6 +92,52 @@ bool cSettings::LoadFromFile(const std::string& sFilePath)
         self_signed_certificate = value;
       }
     }
+
+    // Parse host_name
+    {
+      struct json_object* host_name_obj = json_object_object_get(settings_val, "host_name");
+      if (host_name_obj == nullptr) {
+        std::cerr<<"host_name not found"<<std::endl;
+        return false;
+      }
+
+      enum json_type host_name_type = json_object_get_type(host_name_obj);
+      if (host_name_type != json_type_string) {
+        std::cerr<<"host_name is not a string"<<std::endl;
+        return false;
+      }
+
+      const char* value = json_object_get_string(host_name_obj);
+      if (value == nullptr) {
+        std::cerr<<"host_name is not valid"<<std::endl;
+        return false;
+      }
+
+      host_name = value;
+    }
+
+    // Parse port
+    {
+      struct json_object* port_obj = json_object_object_get(settings_val, "port");
+      if (port_obj == nullptr) {
+        std::cerr<<"port not found"<<std::endl;
+        return false;
+      }
+
+      enum json_type port_type = json_object_get_type(port_obj);
+      if (port_type != json_type_int) {
+        std::cerr<<"port is not an int"<<std::endl;
+        return false;
+      }
+
+      const int value = json_object_get_int(port_obj);
+      if ((value <= 0) || (value > USHRT_MAX)) {
+        std::cerr<<"port is not valid"<<std::endl;
+        return false;
+      }
+
+      port = value;
+    }
   }
 
   return IsValid();
@@ -98,14 +145,17 @@ bool cSettings::LoadFromFile(const std::string& sFilePath)
 
 bool cSettings::IsValid() const
 {
-  // Just check the API token, the self signed certificate is optional
-  return !api_token.empty();
+  // Check the API token, hostname and port
+  // The self signed certificate is optional
+  return (!api_token.empty() && !host_name.empty() && (port != 0));
 }
 
 void cSettings::Clear()
 {
   api_token.clear();
   self_signed_certificate.clear();
+  host_name.clear();
+  port = 0;
 }
 
 }

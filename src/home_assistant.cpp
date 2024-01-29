@@ -4,6 +4,7 @@
 
 #include "json.h"
 #include "home_assistant.h"
+#include "https_socket.h"
 #include "util.h"
 
 namespace {
@@ -377,7 +378,10 @@ bool Authenticate(curl::cWebSocket& ws, const application::cSettings& settings)
 // --> {"type":"auth/sign_path","path":"/api/backup/download/d8f3f2b4","id":38}
 // <-- {"id":37,"type":"result","success":true,"result":{"path":"/api/backup/download/d8f3f2b4?authSig=jksdjioSDJFKLEjkDfklKLDJFKLDF.JKFDLKDSFnsdlksdnlkjsdijISDJFIdsfjlkSDJFKlJSDFIOSJDKFDFlkdfksdfiJFEJIFEWJFSDNkdVHjivVUiCVUpuvrejfijFOJDSIOJSDOIFSDJFODJFDSIFOjdsKDslfnfewleljeNFElnFKLNFLenLKenfleNENklEFKlefnklEFLEKFENKEFLKEFKLFENesfLKEF"}}
 //
-// We can then do a regular non-websocket API request to download the file with that path
+// We could then do a regular non-websocket API request to download the file with that path, but actually all we need is the token, we can build a request like:
+// https://<myserver>:8443/api/backup/download/d8f3f2b4
+//
+// This returns a tar file
 //
 std::string CreateBackup(curl::cWebSocket& ws)
 {
@@ -435,13 +439,31 @@ std::string CreateBackup(curl::cWebSocket& ws)
   return backup_slug;
 }
 
-bool DownloadBackup(curl::cWebSocket& ws, const application::cSettings& settings, const std::string& backup_hash)
+bool DownloadBackup(const application::cSettings& settings, const std::string& backup_hash)
 {
-  (void)ws;
-  (void)settings;
-  (void)backup_hash;
+  // Perform a HTTP request something like this:
+  // https://<myserver>:8443/api/backup/download/d8f3f2b4
+  // We then save the response to a .tar file
 
-  return false;
+  const std::string URL = "https://" + settings.GetHostName() + ":" + std::to_string(settings.GetPort()) + "/api/backup/download/" + backup_hash;
+
+  curl::cHTTPSSocket socket;
+  if (!socket.Open(URL, settings.GetSelfSignedCertificate(), settings.GetAPIToken())) {
+    std::cerr<<"DownloadBackup Error connecting to server"<<std::endl;
+    return false;
+  }
+
+  // Create an output file something like "./backup20230518.d8f3f2b4.tar"
+  const std::string output_tar_file = "./backup" + util::GetDateYYYYMMDD() + "." + backup_hash + ".tar";
+  std::cout<<"Writing backup to \""<<output_tar_file<<"\""<<std::endl;
+
+  if (!socket.DownloadToFile(output_tar_file)) {
+    std::cerr<<"DownloadBackup Error downloading file"<<std::endl;
+    return false;
+  }
+
+  std::cout<<"Backup has been successfully written to \""<<output_tar_file<<"\""<<std::endl;
+  return true;
 }
 
 }

@@ -7,6 +7,8 @@ namespace util {
 // msleep(): Sleep for the requested number of milliseconds
 int msleep(long msec);
 
+std::string GetDateYYYYMMDD();
+
 std::string GetHomeFolder();
 std::string GetConfigFolder(std::string_view sApplicationNameLower);
 bool TestFileExists(const std::string& sFilePath);

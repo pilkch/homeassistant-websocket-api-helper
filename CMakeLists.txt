@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(homeassistant-websocket-api-helper)
 
 file(GLOB_RECURSE sources src/*.cpp)
-file(GLOB_RECURSE sources_test src/curl_helper.cpp src/home_assistant.cpp src/settings.cpp src/util.cpp src/web_socket.cpp test/src/*.cpp)
+file(GLOB_RECURSE sources_test src/curl_helper.cpp src/home_assistant.cpp src/https_socket.cpp src/settings.cpp src/util.cpp src/web_socket.cpp test/src/*.cpp)
 
 # Add the sources to the target
 add_executable(homeassistant-websocket-api-helper ${sources})

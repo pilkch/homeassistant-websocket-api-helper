@@ -11,6 +11,6 @@ bool Authenticate(curl::cWebSocket& ws, const application::cSettings& settings);
 std::string CreateBackup(curl::cWebSocket& ws);
 
 // Downloads an already created backup
-bool DownloadBackup(curl::cWebSocket& ws, const application::cSettings& settings, const std::string& backup_hash);
+bool DownloadBackup(const application::cSettings& settings, const std::string& backup_hash);
 
 }

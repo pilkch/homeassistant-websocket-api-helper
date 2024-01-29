@@ -13,7 +13,7 @@ public:
   cWebSocket();
   ~cWebSocket();
 
-  // NOTE: Open can optionally take a self signed certificate stored in a local file something like "./homeassistant.network.home.crt"
+  // NOTE: Open can optionally take a self signed certificate stored in a local file something like "./myserver.network.home.crt"
   bool Open(std::string_view url, const std::optional<std::string>& self_signed_certificate_path);
   void Close();
 

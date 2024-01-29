@@ -1,9 +1,11 @@
-#include <ctime>
 #include <cerrno>
+#include <ctime>
 
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 
 #include <pwd.h>
 #include <sys/stat.h>
@@ -30,6 +32,15 @@ int msleep(long msec)
   } while (res && errno == EINTR);
 
   return res;
+}
+
+std::string GetDateYYYYMMDD()
+{
+  std::time_t t = std::time(0);   // get time now
+  std::tm* now = std::localtime(&t);
+  std::ostringstream o;
+  o<<std::setw(4)<<std::setfill('0')<<(now->tm_year + 1900)<<std::setw(2)<<(now->tm_mon + 1)<<std::setw(2)<<now->tm_mday;
+  return o.str();
 }
 
 std::string GetHomeFolder()
@@ -68,16 +79,16 @@ size_t GetFileSizeBytes(const std::string& sFilePath)
 bool ReadFileIntoString(const std::string& sFilePath, size_t nMaxFileSizeBytes, std::string& contents)
 {
   if (!TestFileExists(sFilePath)) {
-    std::cerr<<"Settings file \""<<sFilePath<<"\" not found"<<std::endl;
+    std::cerr<<"File \""<<sFilePath<<"\" not found"<<std::endl;
     return false;
   }
 
   const size_t nFileSizeBytes = GetFileSizeBytes(sFilePath);
   if (nFileSizeBytes == 0) {
-    std::cerr<<"Empty config file \""<<sFilePath<<"\""<<std::endl;
+    std::cerr<<"Empty file \""<<sFilePath<<"\""<<std::endl;
     return false;
   } else if (nFileSizeBytes > nMaxFileSizeBytes) {
-    std::cerr<<"Config file \""<<sFilePath<<"\" is too large"<<std::endl;
+    std::cerr<<"File \""<<sFilePath<<"\" is too large"<<std::endl;
     return false;
   }
 
