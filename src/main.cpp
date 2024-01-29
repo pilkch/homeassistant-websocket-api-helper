@@ -39,5 +39,7 @@ int main()
     return EXIT_FAILURE;
   }
 
+  ws.SendClose();
+
   return EXIT_SUCCESS;
 }

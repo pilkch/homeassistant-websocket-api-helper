@@ -68,18 +68,34 @@ bool cWebSocket::SendClose()
 
 ssize_t cWebSocket::Receive(char* data, size_t data_length)
 {
-  size_t nbytes_read = 0;
-  const struct curl_ws_frame* pMeta = nullptr;
-  const CURLcode result = curl_ws_recv(curl, data, data_length, &nbytes_read, &pMeta);
-  if (result == CURLE_OK) {
-    //std::cout<<"cWebSocket::Receive nread "<<nbytes_read<<" Age "<<pMeta->age<<" Flags "<<pMeta->flags<<" Offset "<<pMeta->offset<<" Bytesleft "<<pMeta->bytesleft<<std::endl;
-    return ssize_t(nbytes_read);
-  } else if (result == CURLE_AGAIN) {
-    //std::cout<<"cWebSocket::Receive Try again later"<<std::endl;
-    return 0;
+  // Curl seems to 16384 bytes at a time, so we may need to read multiple times to receive everything
+
+  size_t ntotal_bytes_read = 0;
+
+  while (data_length != 0) {
+    size_t nbytes_read = 0;
+    const struct curl_ws_frame* pMeta = nullptr;
+    const CURLcode result = curl_ws_recv(curl, data, data_length, &nbytes_read, &pMeta);
+    if (result == CURLE_OK) {
+      std::cout<<"cWebSocket::Receive nread "<<nbytes_read<<" Age "<<pMeta->age<<" Flags "<<pMeta->flags<<" Offset "<<pMeta->offset<<" Bytesleft "<<pMeta->bytesleft<<std::endl;
+      ntotal_bytes_read += nbytes_read;
+
+      data += nbytes_read;
+      data_length -= nbytes_read;
+
+      // No bytes left to read, may as well return
+      if (pMeta->bytesleft == 0) {
+        break;
+      }
+    } else if (result == CURLE_AGAIN) {
+      //std::cout<<"cWebSocket::Receive Try again later"<<std::endl;
+      break;
+    } else {
+      return -1;
+    }
   }
 
-  return -1;
+  return ntotal_bytes_read;
 }
 
 }
