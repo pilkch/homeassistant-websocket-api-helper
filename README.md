@@ -48,16 +48,18 @@ $ ./unit_tests
 
 1. Create an API token in Home Assistant under "Long-lived access tokens" in your profile
 2. Optionally, if your Home Assistant instance is using self signed certificates then you will need to get a copy of the public key, saved to something like `myserver.network.home.crt`.
-3. Create a config file `configuration.json` (Replacing the API token and certificate path with your values, leave the certificate path blank or delete the field if you are not using self signed certificates):
+3. Create a copy of the `configuration.json.example` with the name `configuration.json` and modify it with your settings, leave the certificate path blank or delete the field if you are not using self signed certificates:
 ```json
 {
   "settings": {
     "api_token": "ABCDEFGHIJKLMNOPQ",
-    "self_signed_certificate": "./myserver.network.home.crt"
+    "self_signed_certificate": "./myserver.network.home.crt",
+    "host_name": "myserver.network.home",
+    "port": 8443
   }
 }
 ```
-4. Create and download a backup (It will be written to something like ):
+4. Create and download a backup (It will be written to something like backup20230125.df73b3a4.tar):
 ```bash
 ./homeassistant-websocket-api-helper --create-and-download-backup
 ```
