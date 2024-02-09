@@ -7,7 +7,7 @@
 #include "https_socket.h"
 #include "util.h"
 
-namespace {
+namespace homeassistant {
 
 // {
 //   "type": "auth_required",
@@ -278,9 +278,6 @@ std::string ParseBackupCreatedResult(const std::string& json, uint32_t expected_
   return "";
 }
 
-}
-
-namespace homeassistant {
 
 // Traffic Flow
 // https://developers.home-assistant.io/docs/api/websocket/
