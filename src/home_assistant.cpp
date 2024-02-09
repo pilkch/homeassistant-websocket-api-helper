@@ -410,7 +410,7 @@ std::string CreateBackup(curl::cWebSocket& ws)
   std::string backup_slug;
 
   {
-    // Wait for the back has been created response
+    // Wait for the backup has been created response
     // {"id":37,"type":"result","success":true,"result":{"slug":"7d249464","name":"Core 2023.10.5","date":"2024-01-29T00:08:06.448735+11:00","path":"/config/backups/7d249464.tar","size":5.42}}
     std::cout<<"Waiting for the backup to be created"<<std::endl;
 
