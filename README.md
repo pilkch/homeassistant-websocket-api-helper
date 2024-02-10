@@ -9,10 +9,15 @@ Home Assistant also has a websocket API that it seems to use internally when you
 
 ## Data Flow
 
-### 1. Create a Backup with the WebSocket API
+homeassistant-websocket-api-helper performs these two jobs below:
+
+### 1. Creating a Backup with the WebSocket API
 
 https://developers.home-assistant.io/docs/api/websocket/
 
+The websocket API is actually something like HTTP with an upgrade to a websocket, the HTTPS encapsulation and upgrade parts are not covered below, libcurl takes care of that for us  
+Client is homeassistant-websocket-api-helper  
+Server is the HomeAssistant server at something like wss://myhomeassistant:8443/api/websocket  
 ```mermaid
 sequenceDiagram
   autonumber
@@ -20,24 +25,27 @@ sequenceDiagram
   participant S as Server
     C->>S: Client connects
     S->>C: auth_required message
-    C->>S: auth message
+    C->>S: auth message with API token
     S->>C: auth_ok message
     C->>S: backup/generate message
     Note right of S: Server creates backup
     S->>C: result success message slug=7d249464
 ```
 
-### 2. Download the Backup with the REST API
+### 2. Downloading the Backup with the REST API
 
 https://developers.home-assistant.io/docs/api/rest
 
+This is just a regular HTTP GET request, the HTTPS encapsulation is not covered below, libcurl takes care of that for us  
+Client is homeassistant-websocket-api-helper  
+Server is the HomeAssistant server at something like https://myhomeassistant:8443/api/  
 ```mermaid
 sequenceDiagram
   autonumber
   participant C as Client
   participant S as Server
     C->>S: Client connects
-    C->>S: /api/backup/download/7d249464
+    C->>S: GET /api/backup/download/7d249464 with API token
     S-->>C: 7d249464.tar returned in the response content
 ```
 
