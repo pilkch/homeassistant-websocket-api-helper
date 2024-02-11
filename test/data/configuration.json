@@ -1,0 +1,8 @@
+{
+  "settings": {
+    "api_token": "ABCDEFGHIJKLMNOPQ",
+    "self_signed_certificate": "./myserver.network.home.crt",
+    "host_name": "myserver.network.home",
+    "port": 8443
+  }
+}
