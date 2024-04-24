@@ -1,0 +1,41 @@
+stages:
+  - dependencies
+  - build
+  - test
+
+default:
+  before_script:
+    - dnf install -y openssl-devel
+
+dependencies:
+  stage: dependencies
+  tags:
+    - linux
+    - cpp
+    - make
+  script:
+    - cd libcurl
+    - ./build.sh
+  artifacts:
+    untracked: true
+
+build:
+  stage: build
+  needs: [dependencies]
+  tags:
+    - linux
+    - cpp
+    - make
+  script:
+    - cmake .
+    - make -j4
+  artifacts:
+    untracked: true
+
+unit-test:
+  stage: test
+  needs: [build]
+  tags:
+    - linux
+  script:
+    - ./unit_tests
